@@ -1,0 +1,2 @@
+*.sh text eol=lf
+statusline_parse.py text eol=lf
