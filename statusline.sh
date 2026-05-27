@@ -7,8 +7,13 @@ RED="\e[38;2;243;139;168m"
 DIM="\e[2m"
 RESET="\e[0m"
 
+# Resolve this script's own directory so the parser is found regardless of how
+# HOME / ~ expand. Claude Code's bash subshell can set HOME to an unexpected
+# path (e.g. /z/ on some Windows setups), which makes ~/.claude/... silently fail.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 input=$(cat)
-output=$(echo "$input" | python3 ~/.claude/statusline_parse.py 2>/dev/null)
+output=$(echo "$input" | python3 "$SCRIPT_DIR/statusline_parse.py" 2>/dev/null)
 IFS='|' read -r model ctx cost dir effort fh_pct fh_reset wk_pct wk_reset <<< "$output"
 
 # Pick a color based on a usage percentage (green < 50, peach < 80, red >= 80)
